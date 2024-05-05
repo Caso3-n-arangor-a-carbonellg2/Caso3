@@ -11,8 +11,8 @@ public class Main {
         clientes = new Cliente[numberOfDelegates];
         
         for (int i = 0; i < numberOfDelegates; i++) {
-            servers[i] = new Servidor(1234 + i);
-            clientes[i] = new Cliente(servers[i], 1234 + i);
+            servers[i] = new Servidor(8000 + i);
+            clientes[i] = new Cliente(servers[i], 8000 + i);
         }
     }
 
