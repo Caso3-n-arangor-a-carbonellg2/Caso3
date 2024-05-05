@@ -11,13 +11,12 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 
 public class principal {
-	public final static String textoSim = "Mensaje Simétrico";
-	public final static String textoAsim = "Mensaje Asimétrico";
+	public final static String textoSim = "La nueva realidad";
+	public final static String textoAsim = "La nueva realidad";
 
 	public static void main(String[] args) throws NoSuchAlgorithmException {
 		simetrico();
 		System.out.println();
-		Asimetrico();
 	}
 
 	public static void imprimir(byte[] contenido) {
@@ -30,33 +29,18 @@ public class principal {
 
 	public static void simetrico() throws NoSuchAlgorithmException {
 		System.out.println("Texto a cifrar: " + textoSim);
-		System.out.print("Texto claro: ");
+		imprimir(textoSim.getBytes());
 
 		KeyGenerator keygenerator = KeyGenerator.getInstance("AES");
 		SecretKey key = keygenerator.generateKey();
 
-		byte[] cifradoSim = cifradoSimétrico.cifrar(key, textoAsim);
+		byte[] cifradoSim = cifradoSimétrico.cifrar(key, textoSim);
 		System.out.println("Texto cifrado: " + cifradoSim);
+		imprimir(cifradoSim);
 
 		byte[] descifradoSim = cifradoSimétrico.descifrar(key, cifradoSim);
 		String descifradoClaro = new String(descifradoSim, StandardCharsets.UTF_8);
 		System.out.println("Texto descifrado: " + descifradoClaro);
 	}
 
-	public static void Asimetrico() throws NoSuchAlgorithmException {
-		System.out.println("Texto a cifrar: " + textoAsim);
-
-		KeyPairGenerator generator = KeyPairGenerator.getInstance("RSA");
-		generator.initialize(1024);
-		KeyPair keyPair = generator.generateKeyPair();
-		PublicKey publica = keyPair.getPublic();
-		PrivateKey privada = keyPair.getPrivate();
-
-		byte[] cifradoSim = CifradoAsimétrico.cifrar(publica, "RSA", textoAsim);
-		System.out.println("Texto cifrado: " + cifradoSim);
-
-		byte[] descifradoSim = CifradoAsimétrico.descifrar(privada, "RSA", cifradoSim);
-		String descifradoClaro = new String(descifradoSim, StandardCharsets.UTF_8);
-		System.out.println("Texto descifrado: " + descifradoClaro);
-	}
 }
