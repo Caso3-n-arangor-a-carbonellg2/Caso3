@@ -126,15 +126,15 @@ public class Servidor extends Thread {
 
             /// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
-            String nc = (String) in.readObject();
-            String nd = descifrar(nc, llaveSimetrica, vector);
-            Integer nr = Integer.parseInt(nd) - 1;
-            byte[] nrc = cifrar(String.valueOf(nr), llaveSimetrica, vector);
-            byte[] nrb = calcularHMac(llaveHash, String.valueOf(nr));
-            String nrh = Base64.getEncoder().encodeToString(nrb);
+            String numCif = (String) in.readObject();
+            String numDes = descifrar(numCif, llaveSimetrica, vector);
+            Integer numResp = Integer.parseInt(numDes) - 1;
+            byte[] numRespCif = cifrar(String.valueOf(numResp), llaveSimetrica, vector);
+            byte[] numRepby = calcularHMac(llaveHash, String.valueOf(numResp));
+            String numRespHash = Base64.getEncoder().encodeToString(numRepby);
 
-            out.writeObject(nrc);
-            out.writeObject(nrh);
+            out.writeObject(numRespCif);
+            out.writeObject(numRespHash);
             clientSocket.close();
             serverSocket.close();
 
