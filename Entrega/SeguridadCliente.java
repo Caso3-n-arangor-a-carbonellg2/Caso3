@@ -1,3 +1,5 @@
+package Entrega;
+
 import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.IOException;
@@ -24,9 +26,6 @@ import javax.crypto.spec.SecretKeySpec;
 public class SeguridadCliente {
 
     int id;
-
-    String nombreArchivo;
-
     BigInteger P;
     BigInteger G;
     int g;

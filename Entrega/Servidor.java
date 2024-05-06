@@ -1,3 +1,5 @@
+package Entrega;
+
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.math.BigInteger;
@@ -33,7 +35,7 @@ public class Servidor extends Thread {
 
     public Servidor(int port) throws NoSuchAlgorithmException {
         KeyPairGenerator crearLlave = KeyPairGenerator.getInstance("RSA");
-        crearLlave.initialize(2048);
+        crearLlave.initialize(1024);
         KeyPair keyPair = crearLlave.generateKeyPair();
         LLPrivada = keyPair.getPrivate();
         LLPublica = keyPair.getPublic();
