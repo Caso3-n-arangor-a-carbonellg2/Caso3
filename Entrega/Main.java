@@ -1,5 +1,8 @@
 package Entrega;
 
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
+import java.net.Socket;
 import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,9 +41,24 @@ public class Main {
         try (Scanner scan = new Scanner(System.in)) {
             System.out.println("Número de Servidores y Clientes para ejecutar: ");
 
-            String numberOfDelegates = scan.nextLine();
-            main.Generador(Integer.parseInt(numberOfDelegates));
+            String numConexiones = scan.nextLine();
+            main.Generador(Integer.parseInt(numConexiones));
             main.Delegados();
+        }
+
+        System.out.println("Iniciando cliente...");
+
+        String nombrePuerto = "localhost";
+        int numeroPuerto = 1234;
+        try (Socket socket = new Socket(nombrePuerto, numeroPuerto)) {
+            DataOutputStream outServer = new DataOutputStream(socket.getOutputStream());
+            DataInputStream inServer = new DataInputStream(socket.getInputStream());
+
+            DataInputStream inConsola = new DataInputStream(System.in);
+
+            SeguridadCliente seguridadCliente = new SeguridadCliente(inConsola, inServer,
+                    outServer);
+            seguridadCliente.procesar();
         }
     }
 }

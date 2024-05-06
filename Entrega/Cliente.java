@@ -20,7 +20,7 @@ public class Cliente {
 
     public void run() throws Exception {
 
-        System.out.println("Cliente iniciado ...");
+        System.out.println("Iniciando cliente...");
 
         Socket socket = new Socket(nombrePuerto, numeroPuerto); // Conectar al servidor en el puerto 1234
 
@@ -33,11 +33,11 @@ public class Cliente {
                 outServer);
         seguridadCliente.procesar();
 
-        // Cerrar todos los BufferedReaders y PrintReader
+        // Cerrar todos los hilos
         inConsola.close();
         inServer.close();
         outServer.close();
-        socket.close(); // Cerrar la conexión con el servidor
+        socket.close(); // Cerrar la conexión
 
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'start'");
