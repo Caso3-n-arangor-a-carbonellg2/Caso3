@@ -22,7 +22,7 @@ public class Cliente {
 
         System.out.println("Iniciando cliente...");
 
-        Socket socket = new Socket(nombrePuerto, numeroPuerto); // Conectar al servidor en el puerto 1234
+        Socket socket = new Socket(nombrePuerto, numeroPuerto); 
 
         outServer = new DataOutputStream(socket.getOutputStream());
         inServer = new DataInputStream(socket.getInputStream());

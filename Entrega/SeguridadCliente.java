@@ -78,28 +78,26 @@ public class SeguridadCliente {
 
         obtenerLlaveAsimetrica();
 
-        // Paso 1
+       
         System.out.println("Se envia al servidor \"Secure init\" con mensaje: \"RETO\"");
-        this.outServer.writeUTF("SECURE INIT" + "," + SeguridadCliente.RETO.toString()); // Se envia la primera
-        // instruccion
+        this.outServer.writeUTF("SECURE INIT" + "," + SeguridadCliente.RETO.toString()); 
+        
 
-        // Paso 3
+  
         String firmaRETO = null;
         firmaRETO = this.inServer.readUTF();
 
-        // Paso 4
-        boolean isValid = verificarFirmaConexion(firmaRETO); // Se verifica si la firma coincide con lo que se envio
+      
+        boolean isValid = verificarFirmaConexion(firmaRETO); 
         if (isValid) {
             this.outServer.writeUTF("OK");
         } else {
             this.outServer.writeUTF("ERROR");
-            throw new SignatureException("La firma digital no es válida."); // El cliente se detiene si el digest es
-                                                                            // incorrecto
+            throw new SignatureException("La firma digital no es válida."); 
         }
 
         System.out.println("La firma que paso el servidor esta correcto y los datos son consistentes");
 
-        // Paso 8
         fromServer = null;
         fromServer = this.inServer.readUTF();
         this.G = new BigInteger(fromServer);
@@ -114,11 +112,10 @@ public class SeguridadCliente {
         this.iv = new IvParameterSpec(Base64.getDecoder().decode(fromServer));
 
         String GPGxFirmado = this.inServer.readUTF();
-        String GPGxCliente = this.G.toString() + "," + this.P.toString() + "," + this.Gx.toString(); // Se concatenan
-                                                                                                     // los valores
-                                                                                                     // recibidos
+        String GPGxCliente = this.G.toString() + "," + this.P.toString() + "," + this.Gx.toString(); 
+                                                                                                    
 
-        // Paso 9
+      
         boolean isValidDiffie = verificarFirmaDiffie(GPGxFirmado, GPGxCliente);
         if (isValidDiffie) {
             this.outServer.writeUTF("OK");
@@ -133,14 +130,14 @@ public class SeguridadCliente {
 
         this.outServer.writeUTF(this.Gy.toString(g)); // Se calcula G^y mod P
 
-        // Paso 11.a
+     
         this.z = this.Gx.modPow(this.y, this.P);
 
         byte[] bytesDeZ = z.toByteArray();
         MessageDigest digest = MessageDigest.getInstance("SHA-512");
         byte[] hash = digest.digest(bytesDeZ); // Es de tamaño 512 bits
-        byte[] primeraMitasHash = new byte[hash.length / 2]; // De tamaño 32 Bytes, porque es la mitad del tamanio del
-                                                             // Hash
+        byte[] primeraMitasHash = new byte[hash.length / 2]; 
+                                                        
         byte[] SegundaMitasHash = new byte[hash.length / 2];
 
         for (int i = 0; i < hash.length; i++) {
@@ -156,32 +153,31 @@ public class SeguridadCliente {
 
         System.out.println("Se generaron las llaves secretas para cifrar y para el HMAC");
 
-        // Paso 12
+      
         fromServer = null;
         fromServer = inServer.readUTF();
         if (!fromServer.equals("CONTINUAR")) {
-            throw new SignatureException("Se deberia haber pasado \"CONTINUAR\""); // El cliente se detiene si el
-                                                                                   // digest es incorrecto
+            throw new SignatureException("Se deberia haber pasado \"CONTINUAR\""); 
         }
         if ("CONTINUAR".equals(fromServer)) {
-            // Convertir los bytes cifrados a String para enviar
+            
             String loginCifrado = Base64.getEncoder()
                     .encodeToString(Servidor.cifrar("login", llaveSimetricaParaCifrar, iv.getIV()));
             String passwordCifrado = Base64.getEncoder()
                     .encodeToString(Servidor.cifrar("password", llaveSimetricaParaCifrar, iv.getIV()));
 
-            outServer.writeUTF(loginCifrado); // Enviar login cifrado
-            outServer.writeUTF(passwordCifrado); // Enviar contraseña cifrada
+            outServer.writeUTF(loginCifrado); 
+            outServer.writeUTF(passwordCifrado); 
 
-            // Recibir verificación de login y contraseña
+          
             String verificationResult = inServer.readUTF();
             if ("OK".equals(verificationResult)) {
-                // Convertir los bytes cifrados a String para enviar
+               
                 String consultaCifrada = Base64.getEncoder()
                         .encodeToString(Servidor.cifrar("consulta", llaveSimetricaParaCifrar, iv.getIV()));
-                outServer.writeUTF(consultaCifrada); // Enviar consulta cifrada
+                outServer.writeUTF(consultaCifrada); 
 
-                // Recibir HMAC de consulta y verificar
+                
                 String hmacConsulta = inServer.readUTF();
                 byte[] hmacConsultaBytes = Base64.getDecoder().decode(hmacConsulta);
                 if (Arrays.equals(generarHMAC("consulta".getBytes()), hmacConsultaBytes)) {
@@ -232,19 +228,7 @@ public class SeguridadCliente {
         isValid = signature2.verify(listaBytes);
         return isValid;
 
-        // Boolean retoVerificado =
-        // llaveSimetricaParaCifrar.verificarFirmaConexion(RETO, signature2,
-        // // llavePublicaServer);
-        // // long startTime = System.nanoTime();
-        // long endTime;
-        // long duration = endTime - startTime; // duración en milisegundos
-        // System.out.println("C Verificar firma ns: " + duration);
-        // // Verificamos en esta parte si coincidio la verificacion del reto o si no
-        // if (isValid) {
-        // outServer.writeUTF(aVerificar);
-        // } else {
-        // outServer.writeInt(g);
-        // }
+        
     }
 
     public void detener() {
@@ -263,7 +247,6 @@ public class SeguridadCliente {
      */
     private void obtenerLlaveAsimetrica() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
 
-        // Creacion de llave publica
         byte[] bytesLlavePublica = Base64.getDecoder().decode(llavePublicaServerSrt);
         KeyFactory keyFactory = KeyFactory.getInstance("RSA");
         this.llavePublicaServer = keyFactory.generatePublic(new X509EncodedKeySpec(bytesLlavePublica));

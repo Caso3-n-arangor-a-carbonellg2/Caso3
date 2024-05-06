@@ -157,6 +157,7 @@ public class Servidor extends Thread {
         duration = endTime - startTime; // duración en milisegundos
         System.out.println("S verificar  en ns: " + duration);
 
+        //se cambio tiempo de uno de ellos a microsegundo en la grafica
     }
 
 }
