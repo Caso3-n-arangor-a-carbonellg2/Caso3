@@ -90,13 +90,13 @@ public class Servidor extends Thread {
             DHPublicKey serverPublicKey = (DHPublicKey) serverKeyPair.getPublic();
             BigInteger g = serverPublicKey.getParams().getG();
             BigInteger p = serverPublicKey.getParams().getP();
-            BigInteger gxmodp = serverPublicKey.getY();
+            BigInteger multiplicacion = serverPublicKey.getY();
             Random rnd = new Random();
 
-            // añadimos el limite al que puede estar
+            
             Integer limite = p.subtract(new BigInteger("1")).intValue();
-            int numeroXInt = rnd.nextInt(limite);
-            BigInteger X = BigInteger.valueOf(numeroXInt);
+            int x1 = rnd.nextInt(limite);
+            BigInteger X = BigInteger.valueOf(x1);
 
             System.out.println("checkpoint");
             SecureRandom random = new SecureRandom();
@@ -105,52 +105,36 @@ public class Servidor extends Thread {
 
             out.writeObject(g);
             out.writeObject(p);
-            out.writeObject(gxmodp);
+            out.writeObject(multiplicacion);
             out.writeObject(vector);
             signature.update(g.toByteArray());
             signature.update(p.toByteArray());
-            signature.update(gxmodp.toByteArray());
+            signature.update(multiplicacion.toByteArray());
             byte[] intento = signature.sign();
             out.writeObject(intento);
             // aca
             BigInteger cteG = (BigInteger) in.readObject();
-            // elevar a la x el numero que nos dieron elevado a la y
             BigInteger numeroFinal = cteG.modPow(X, p);
-            System.out.println("Llave Maestra Servidor: " + numeroFinal);
 
             MessageDigest digest = MessageDigest.getInstance("SHA-512");
             byte[] digestWithSHA512 = digest.digest(numeroFinal.toByteArray());
-
-            // Con los primeros 256 bits sacar la llave para cifrar
-            byte[] bytesSimetrica = Arrays.copyOfRange(digestWithSHA512, 0, 32); // Primeros 256 bits
-
-            // con los ultimos 256 bits sacar la llave para hacer el HMAC
-            byte[] bytesHash = Arrays.copyOfRange(digestWithSHA512, 32, 64); // Últimos 256 bits
-
-            // pasamos a llaves los bytes de la llave Simetrica
+            byte[] bytesSimetrica = Arrays.copyOfRange(digestWithSHA512, 0, 32); 
+            byte[] bytesHash = Arrays.copyOfRange(digestWithSHA512, 32, 64); 
             SecretKeySpec llaveSimetrica = new SecretKeySpec(bytesSimetrica, "AES");
-
-            // pasamos a llave los bytes de la llave para Hash
             SecretKeySpec llaveHash = new SecretKeySpec(bytesHash, "HMACSHA256");
-
-            // Le decimos al cliente que continue con el proceso
             out.writeObject("CONTINUAR");
 
             /// AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
 
-            String numeroCifrado = (String) in.readObject();
+            String nc = (String) in.readObject();
+            String nd = descifrar(nc, llaveSimetrica, vector);
+            Integer nr = Integer.parseInt(nd) - 1;
+            String nrc = cifrar(String.valueOf(nr), llaveSimetrica, vector);
+            byte[] nrb = calcularHMac(llaveHash, String.valueOf(nr));
+            String nrh = Base64.getEncoder().encodeToString(nrb);
 
-            String numeroDescifrado = descifrar(numeroCifrado, llaveSimetrica, vector);
-
-            Integer numeroRespuesta = Integer.parseInt(numeroDescifrado) - 1;
-
-            String numeroRespuestaCifrado = cifrar(String.valueOf(numeroRespuesta), llaveSimetrica, vector);
-
-            byte[] numeroRespuestaBytes = calcularHMac(llaveHash, String.valueOf(numeroRespuesta));
-            String numeroRespuestaHash = Base64.getEncoder().encodeToString(numeroRespuestaBytes);
-
-            out.writeObject(numeroRespuestaCifrado);
-            out.writeObject(numeroRespuestaHash);
+            out.writeObject(nrc);
+            out.writeObject(nrh);
             clientSocket.close();
             serverSocket.close();
 
