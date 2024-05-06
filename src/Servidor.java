@@ -51,13 +51,14 @@ public class Servidor extends Thread {
         return new String(descifrado);
     }
 
-    public String cifrar(String texto, Key llave, byte[] vector) throws Exception {
+    public static byte[] cifrar(String texto, Key llave, byte[] vector) throws Exception {
         Cipher cifrador = Cipher.getInstance(ALGORITMO);
 
         IvParameterSpec ivParam = new IvParameterSpec(vector);
         cifrador.init(Cipher.ENCRYPT_MODE, llave, ivParam);
         byte[] textoCifrado = cifrador.doFinal(texto.getBytes());
-        return Base64.getEncoder().encodeToString(textoCifrado);
+        byte[] textoCifradoBytes = Base64.getEncoder().encode(textoCifrado);
+        return textoCifradoBytes;
     }
 
     public byte[] calcularHMac(Key llaveCifrado, String mensaje) throws NoSuchAlgorithmException, InvalidKeyException {
@@ -144,7 +145,7 @@ public class Servidor extends Thread {
 
             Integer numeroRespuesta = Integer.parseInt(numeroDescifrado) - 1;
 
-            String numeroRespuestaCifrado = cifrar(String.valueOf(numeroRespuesta), llaveSimetrica, vector);
+            byte[] numeroRespuestaCifrado = cifrar(String.valueOf(numeroRespuesta), llaveSimetrica, vector);
 
             byte[] numeroRespuestaBytes = calcularHMac(llaveHash, String.valueOf(numeroRespuesta));
             String numeroRespuestaHash = Base64.getEncoder().encodeToString(numeroRespuestaBytes);
