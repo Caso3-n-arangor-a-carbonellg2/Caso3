@@ -32,7 +32,7 @@ public class principal {
         keygenerator.init(256);
         SecretKey key = keygenerator.generateKey();
 
-        String mensajeCifradoString = new String(key.getEncoded(), StandardCharsets.UTF_8);
+        String mensajeCifradoString = new String(key.getEncoded().toString(), StandardCharsets.UTF_8);
         System.out.println("Llave generada: " + mensajeCifradoString);
 
         // Generar un vector de inicialización (IV) de 16 bytes para AES
