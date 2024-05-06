@@ -143,6 +143,20 @@ public class Servidor extends Thread {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        long startTime = System.nanoTime();
+        long endTime = System.nanoTime();
+        long duration = endTime - startTime; // duración en milisegundos
+        System.out.println("S generar firma ns: " + duration);
+
+        endTime = System.nanoTime();
+        duration = endTime - startTime; // duración en milisegundos
+        System.out.println("S descifrar consulta en ns: " + duration);
+
+        endTime = System.nanoTime();
+        duration = endTime - startTime; // duración en milisegundos
+        System.out.println("S verificar  en ns: " + duration);
+
     }
 
 }

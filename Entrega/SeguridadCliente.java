@@ -114,8 +114,9 @@ public class SeguridadCliente {
         this.iv = new IvParameterSpec(Base64.getDecoder().decode(fromServer));
 
         String GPGxFirmado = this.inServer.readUTF();
-        String GPGxCliente = this.G.toString() + "," + this.P.toString() + "," + this.Gx.toString(); // GPGx = G,P,G^x
-        System.out.println("Se rreciben lso numero primos.");
+        String GPGxCliente = this.G.toString() + "," + this.P.toString() + "," + this.Gx.toString(); // Se concatenan
+                                                                                                     // los valores
+                                                                                                     // recibidos
 
         // Paso 9
         boolean isValidDiffie = verificarFirmaDiffie(GPGxFirmado, GPGxCliente);
@@ -123,9 +124,7 @@ public class SeguridadCliente {
             this.outServer.writeUTF("OK");
         } else {
             this.outServer.writeUTF("ERROR");
-            throw new SignatureException("La firma digital no es válida."); // El cliente se detiene si el los numero
-                                                                            // recibidos no son consistentes con la
-                                                                            // firma
+            throw new SignatureException("La firma digital no es válida.");
         }
 
         // Paso 10
@@ -139,8 +138,8 @@ public class SeguridadCliente {
 
         byte[] bytesDeZ = z.toByteArray();
         MessageDigest digest = MessageDigest.getInstance("SHA-512");
-        byte[] hash = digest.digest(bytesDeZ); // Es de tamanio 512 bits, ppor tanto 64 Bytes
-        byte[] primeraMitasHash = new byte[hash.length / 2]; // De tamanio 32 Bytes, porque es la mitad del tamanio del
+        byte[] hash = digest.digest(bytesDeZ); // Es de tamaño 512 bits
+        byte[] primeraMitasHash = new byte[hash.length / 2]; // De tamaño 32 Bytes, porque es la mitad del tamanio del
                                                              // Hash
         byte[] SegundaMitasHash = new byte[hash.length / 2];
 
@@ -161,9 +160,8 @@ public class SeguridadCliente {
         fromServer = null;
         fromServer = inServer.readUTF();
         if (!fromServer.equals("CONTINUAR")) {
-            throw new SignatureException("Se deberia haber pasado \"CONTINUAR\""); // El cliente se detiene si el los
-                                                                                   // numero recibidos no son
-                                                                                   // consistentes con la firma
+            throw new SignatureException("Se deberia haber pasado \"CONTINUAR\""); // El cliente se detiene si el
+                                                                                   // digest es incorrecto
         }
         if ("CONTINUAR".equals(fromServer)) {
             // Convertir los bytes cifrados a String para enviar
@@ -233,6 +231,20 @@ public class SeguridadCliente {
         signature2.update(RETO.toByteArray());
         isValid = signature2.verify(listaBytes);
         return isValid;
+
+        // Boolean retoVerificado =
+        // llaveSimetricaParaCifrar.verificarFirmaConexion(RETO, signature2,
+        // // llavePublicaServer);
+        // // long startTime = System.nanoTime();
+        // long endTime;
+        // long duration = endTime - startTime; // duración en milisegundos
+        // System.out.println("C Verificar firma ns: " + duration);
+        // // Verificamos en esta parte si coincidio la verificacion del reto o si no
+        // if (isValid) {
+        // outServer.writeUTF(aVerificar);
+        // } else {
+        // outServer.writeInt(g);
+        // }
     }
 
     public void detener() {
