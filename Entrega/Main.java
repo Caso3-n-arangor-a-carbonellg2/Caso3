@@ -28,7 +28,7 @@ public class Main {
             clients.get(i).start();
             Thread.sleep(2000);
             Thread.sleep(2000);
-            System.out.println("");
+            System.out.println("Hilos iniciados...");
         }
     }
 
@@ -36,9 +36,7 @@ public class Main {
         Main main = new Main();
 
         try (Scanner scan = new Scanner(System.in)) {
-            System.out.println("");
-            System.out.print("Número de Servidores y Clientes para ejecutar: ");
-            System.out.println("");
+            System.out.println("Número de Servidores y Clientes para ejecutar: ");
 
             String numberOfDelegates = scan.nextLine();
             main.Generador(Integer.parseInt(numberOfDelegates));
