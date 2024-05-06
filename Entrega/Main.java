@@ -54,11 +54,22 @@ public class Main {
             DataOutputStream outServer = new DataOutputStream(socket.getOutputStream());
             DataInputStream inServer = new DataInputStream(socket.getInputStream());
 
-            DataInputStream inConsola = new DataInputStream(System.in);
-
-            SeguridadCliente seguridadCliente = new SeguridadCliente(inConsola, inServer,
-                    outServer);
-            seguridadCliente.procesar();
         }
+        DataInputStream inConsola = new DataInputStream(System.in);
+
+        Socket socket = new Socket(nombrePuerto, numeroPuerto); // Conectar al servidor en el puerto 1234
+        DataOutputStream outServer = new DataOutputStream(socket.getOutputStream());
+        DataInputStream inServer = new DataInputStream(socket.getInputStream());
+        SeguridadCliente seguridadCliente = new SeguridadCliente(inConsola, inServer,
+                outServer);
+        seguridadCliente.ejecutar();
+
+        // Cerrar todos los hilos
+        inConsola.close();
+        inServer.close();
+        outServer.close();
+        socket.close(); // Cerrar la conexión
+
     }
+
 }

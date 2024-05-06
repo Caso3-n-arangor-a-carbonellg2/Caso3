@@ -31,7 +31,7 @@ public class Cliente {
 
         SeguridadCliente seguridadCliente = new SeguridadCliente(inConsola, inServer,
                 outServer);
-        seguridadCliente.procesar();
+        seguridadCliente.ejecutar();
 
         // Cerrar todos los hilos
         inConsola.close();

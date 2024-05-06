@@ -72,7 +72,7 @@ public class SeguridadCliente {
      * 
      * @throws Exception
      */
-    public void procesar() throws Exception {
+    public void ejecutar() throws Exception {
 
         String fromServer = null;
 
