@@ -17,7 +17,7 @@ public class Cliente {
         System.out.println("Cliente iniciado ...");
 
         try {
-            socket = new Socket(Cliente.servidor, Cliente.numeroPuerto); // Conectar al servidor en el puerto 1234
+            socket = new Socket(servidor, numeroPuerto); // Conectar al servidor en el puerto 1234
 
             outServer = new DataOutputStream(socket.getOutputStream());
             inServer = new DataInputStream(socket.getInputStream());

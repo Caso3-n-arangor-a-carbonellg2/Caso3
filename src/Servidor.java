@@ -129,7 +129,7 @@ public class Servidor extends Thread {
             String nc = (String) in.readObject();
             String nd = descifrar(nc, llaveSimetrica, vector);
             Integer nr = Integer.parseInt(nd) - 1;
-            String nrc = cifrar(String.valueOf(nr), llaveSimetrica, vector);
+            byte[] nrc = cifrar(String.valueOf(nr), llaveSimetrica, vector);
             byte[] nrb = calcularHMac(llaveHash, String.valueOf(nr));
             String nrh = Base64.getEncoder().encodeToString(nrb);
 
