@@ -155,7 +155,7 @@ public class Servidor extends Thread {
             serverSocket.close();
 
         } catch (Exception e) {
-            // TODO: handle exception
+            e.printStackTrace();
         }
     }
 
